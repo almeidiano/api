@@ -12,6 +12,10 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        '/web-api/auth/session/v2/verifyOperatorPlayerSession'
+        '/web-api/auth/session/v2/verifyOperatorPlayerSession',
+        '/web-api/auth/session/v2/verifySession',
+        '/web-api/game-proxy/v2/GameName/Get',
+        '/game-api/fortune-tiger/v2/GameInfo/Get',
+        '/game-api/fortune-tiger/v2/Spin'
     ];
 }
