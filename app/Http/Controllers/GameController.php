@@ -47,8 +47,18 @@ class GameController extends Controller
         return response($this->rGameNameJson());
     }
     
-    public function getGameInfo() {
-        return response($this->rGameInfoJson());
+    public function getGameInfo($game, Request $request) {
+        $game = $this->getAllGames($game);
+        $filePath = storage_path('app/game/'.$game->gameCode . "getGameInfo.json");
+
+        if(!file_exists($filePath)) {
+            return response()->json(['error' => 'Jogo não encontrado'], 404);
+        }
+
+        $jsonContent = file_get_contents($filePath);
+        $getGameInfo = json_decode($jsonContent);
+        
+        return response($getGameInfo);
     }
     
     public function spin() {
@@ -134,113 +144,6 @@ class GameController extends Controller
                 11
             ]
         }
-    },
-    "err": null
-}';
-    }
-    
-    public function rGameInfoJson() {
-        return '{
-    "dt": {
-        "fb": null,
-        "wt": {
-            "mw": 5,
-            "bw": 20,
-            "mgw": 35,
-            "smgw": 50
-        },
-        "maxwm": null,
-        "cs": [
-            0.08,
-            0.8,
-            3,
-            10
-        ],
-        "ml": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10
-        ],
-        "mxl": 5,
-        "bl": 0.50,
-        "inwe": false,
-        "iuwe": false,
-        "ls": {
-            "si": {
-                "wc": 70,
-                "ist": false,
-                "itw": true,
-                "fws": 0,
-                "wp": null,
-                "orl": [
-                    4,
-                    7,
-                    6,
-                    6,
-                    6,
-                    7,
-                    3,
-                    5,
-                    5
-                ],
-                "lw": null,
-                "irs": false,
-                "gwt": -1,
-                "fb": null,
-                "ctw": 0,
-                "pmt": null,
-                "cwc": 0,
-                "fstc": null,
-                "pcwc": 0,
-                "rwsp": null,
-                "hashr": "0:4;6;3#7;6;5#6;7;5#MV#0.40#MT#1#MG#0#",
-                "ml": 1,
-                "cs": 0.08,
-                "rl": [
-                    4,
-                    7,
-                    6,
-                    6,
-                    6,
-                    7,
-                    3,
-                    5,
-                    5
-                ],
-                "sid": "1797467054136231936",
-                "psid": "1797467054136231936",
-                "st": 1,
-                "nst": 1,
-                "pf": 1,
-                "aw": 0,
-                "wid": 0,
-                "wt": "C",
-                "wk": "0_C",
-                "wbn": null,
-                "wfg": null,
-                "blb": 0.79,
-                "blab": 0.39,
-                "bl": 0.50,
-                "tb": 0.4,
-                "tbb": 0.4,
-                "tw": 0,
-                "np": -0.4,
-                "ocr": null,
-                "mr": null,
-                "ge": [
-                    1,
-                    11
-                ]
-            }
-        },
-        "cc": "BRL"
     },
     "err": null
 }';
