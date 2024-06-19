@@ -38,7 +38,7 @@ class GameController extends Controller
         $data['dt']['geu'] = str_replace("game-name", $update->gameCode, $data['dt']['geu']);
         $data['dt']['tk'] = $request['tk'];
         // $data['dt']['nkn']);
-        $data['dt']['gn'][0]["gid"] = $data->gameId;
+        $data['dt']['gm'][0]["gid"] = $update->gameId;
 
         return response()->json($data);
     }
