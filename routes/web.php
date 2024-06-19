@@ -18,4 +18,4 @@ Route::post('/web-api/auth/session/v2/verifyOperatorPlayerSession', [GameControl
 Route::post('/web-api/auth/session/v2/verifySession', [GameController::class, 'verifySession']);
 Route::post('/web-api/game-proxy/v2/GameName/Get', [GameController::class, 'getGameName']);
 Route::post('/game-api/{game}/v2/GameInfo/Get', [GameController::class, 'getGameInfo']);
-Route::post('/game-api/{game}}/v2/Spin', [GameController::class, 'spin']);
+Route::post('/game-api/{game}/v2/Spin', [GameController::class, 'spin']);

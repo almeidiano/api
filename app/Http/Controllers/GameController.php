@@ -49,7 +49,7 @@ class GameController extends Controller
     
     public function getGameInfo($game, Request $request) {
         $game = $this->getAllGames($game);
-        $filePath = storage_path('app/game/'.$game->gameCode . "getGameInfo.json");
+        $filePath = storage_path('app/game/'.$game->gameCode . "/getGameInfo.json");
 
         if(!file_exists($filePath)) {
             return response()->json(['error' => 'Jogo não encontrado'], 404);
@@ -58,7 +58,7 @@ class GameController extends Controller
         $jsonContent = file_get_contents($filePath);
         $getGameInfo = json_decode($jsonContent);
         
-        return response($getGameInfo);
+        return response()->json($getGameInfo);
     }
     
     public function spin() {
