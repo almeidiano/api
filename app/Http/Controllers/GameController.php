@@ -6,12 +6,41 @@ use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function verifyOperatorPlayerSession() {
-        return response($this->rJson());
+    private function getAllGames($game_id_code) {
+        $filePath = storage_path('app/game-configs/allGames.json');
+
+        if(!file_exists($filePath)) {
+            return response()->json(['error' => 'Arquivo allGames não encontrado'], 404);
+        }
+
+        $jsonContent = file_get_contents($filePath);
+        $gameConfig = json_decode($jsonContent);
+
+        forEach($gameConfig as $game) {
+            if(filter_var($game_id_code, FILTER_VALIDATE_INT) !== false) {
+                if($game->gameId == $game_id_code) {
+                    return $game;
+                }
+            } else {
+                if($game->gameCode == $game_id_code) {
+                    return $game;
+                }
+            }
+        }
+
+        return response()->json(['error' => "Jogo não encontrado"], 404);
     }
     
-    public function verifySession() {
-        return response($this->rSessionJson());
+    public function verifySession(Request $request) {
+        $update = $this->getAllGames($request['gi']);
+        $data = json_decode($this->rSessionJson(), true);
+        
+        $data['dt']['geu'] = str_replace("game-name", $update->gameCode, $data['dt']['geu']);
+        $data['dt']['tk'] = $request['tk'];
+        // $data['dt']['nkn']);
+        $data['dt']['gn'][0]["gid"] = $data->gameId;
+
+        return response()->json($data);
     }
     
     public function getGameName() {
@@ -360,7 +389,7 @@ class GameController extends Controller
         "pcd": "demobrl00002456",
         "tk": "779A1DF5-DB0F-455B-8818-4FD4DCFC4788",
         "st": 1,
-        "geu": "https:\/\/api.almeidiano.dev\/game-api\/fortune-tiger\/",
+        "geu": "https:\/\/api.almeidiano.dev\/game-api\/game-name\/",
         "lau": "https:\/\/api.almeidiano.dev\/game-api\/lobby\/",
         "bau": "https:\/\/api.almeidiano.dev\/web-api\/game-proxy\/",
         "cc": "BRL",

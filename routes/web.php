@@ -14,7 +14,7 @@ use App\Http\Controllers\GameController;
 |
 */
 
-Route::post('/web-api/auth/session/v2/verifyOperatorPlayerSession', [GameController::class, 'verifyOperatorPlayerSession']);
+Route::post('/web-api/auth/session/v2/verifyOperatorPlayerSession', [GameController::class, 'verifySession']);
 Route::post('/web-api/auth/session/v2/verifySession', [GameController::class, 'verifySession']);
 Route::post('/web-api/game-proxy/v2/GameName/Get', [GameController::class, 'getGameName']);
 Route::post('/game-api/fortune-tiger/v2/GameInfo/Get', [GameController::class, 'getGameInfo']);
