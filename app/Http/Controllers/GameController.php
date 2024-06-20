@@ -14,6 +14,7 @@ class GameController extends Controller
     protected $symbols;
     protected $multiplier;
     protected $lines;
+    protected $sequence = [];
     
     private function getAllGames($game_id_code) {
         $filePath = storage_path('app/game-configs/allGames.json');
@@ -111,13 +112,23 @@ class GameController extends Controller
             4 => [0,4,8],
             5 => [2,4,6],
         ];
-
+        
+        $this->generateResult();
         $data = json_decode($this->spinJson(), true);
-        $data['dt']['si']['orl'] = [0,0,0,0,0,0,0,0,0];
-        $data['dt']['si']['rl'] = [0,0,0,0,0,0,0,0,0];    
-        // $data['dt']['si']['wp'] = [0,0,0,0,0,0,0,0,0];    
+
+        $data['dt']['si']['orl'] = $this->sequence;
+        $data['dt']['si']['rl'] = $this->sequence;    
         
         return response()->json($data);
+    }
+
+    public function generateResult() {
+        $count = count($this->symbols);
+
+        for($i = 0; $i < $this->table; $i++) {
+            $randomIndex = mt_rand(0, $count - 1);
+            $this->sequence[] = $this->symbols[$randomIndex];
+        }
     }
     
     public function spinJson() {
