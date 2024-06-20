@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 class GameController extends Controller
 {
     protected $cs;
+    protected $bet;
     protected $ml;
     protected $table;
     protected $symbols;
@@ -89,6 +90,7 @@ class GameController extends Controller
     }
     
     public function spin(Request $request) {
+        $this->bet = $this->cs * $this->ml;
         $this->cs = $request->cs;
         $this->ml = $request->ml;
         $this->table = 9;
@@ -112,13 +114,27 @@ class GameController extends Controller
             4 => [0,4,8],
             5 => [2,4,6],
         ];
-        
+
         $this->generateResult();
         $data = json_decode($this->spinJson(), true);
 
         $data['dt']['si']['orl'] = $this->sequence;
-        $data['dt']['si']['rl'] = $this->sequence;    
+        $data['dt']['si']['rl'] = $this->sequence; 
         
+        $data['dt']['si']['cs'] = $this->cs;    
+        $data['dt']['si']['ml'] = $this->ml;    
+
+        $data['dt']['si']['tb'] = $this->bet * count($this->lines);
+        $data['dt']['si']['tbb'] = $this->bet * count($this->lines);
+        $data['dt']['si']['np'] = -$this->bet * count($this->lines);
+
+        // linhas ganhadoras
+        $data['dt']['si']['wp'] = null; 
+        // valor ganhado em cada determinação da linha
+        $data['dt']['si']['lw'] = null;
+        // determinar qual valor ganho diante disso
+        $data['dt']['si']['aw'] = null;    
+
         return response()->json($data);
     }
 
