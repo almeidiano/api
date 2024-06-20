@@ -3,9 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
 
 class GameController extends Controller
 {
+    protected $cs;
+    protected $ml;
+    protected $table;
+    protected $symbols;
+    protected $multiplier;
+    protected $lines;
+    
     private function getAllGames($game_id_code) {
         $filePath = storage_path('app/game-configs/allGames.json');
 
@@ -52,7 +61,24 @@ class GameController extends Controller
         $filePath = storage_path('app/game/'.$game->gameCode . "/getGameInfo.json");
 
         if(!file_exists($filePath)) {
-            return response()->json(['error' => 'Jogo não encontrado'], 404);
+            File::makeDirectory('app/game/'.$game->gameCode, 0755, true, true);
+            $response = Http::get('https://api.pg-demo.com/game-api/'.$game->gameCode.'/v2/GameInfo/Get');
+
+                        // File::put('app/game/'.$game->gameCode . "/getGameInfo.json", );
+
+            // if($response->successful()) {
+            //         dd('ok');
+            // }else {
+            //     return response("Arquivo não existe ou está fora do ar.", 404);
+            // }
+
+            dd($response);
+
+            // $jsonContent = file_get_contents($filePath);
+            // $getGameInfo = json_decode($jsonContent);
+            
+            // return response()->json($getGameInfo);
+            // return response()->json(['error' => 'Jogo não encontrado'], 404);
         }
 
         $jsonContent = file_get_contents($filePath);
@@ -61,8 +87,37 @@ class GameController extends Controller
         return response()->json($getGameInfo);
     }
     
-    public function spin() {
-        return response($this->spinJson());
+    public function spin(Request $request) {
+        $this->cs = $request->cs;
+        $this->ml = $request->ml;
+        $this->table = 9;
+
+        $this->symbols = [0, 2, 3, 4, 5, 6, 7];
+
+        $this->multiplier = [
+            0 => [3 => 250],
+            2 => [3 => 100],
+            3 => [3 => 25],
+            4 => [3 => 10],
+            5 => [3 => 8],
+            6 => [3 => 5],
+            7 => [3 => 3]
+        ];
+
+        $this->lines = [
+            1 => [1,4,7],
+            2 => [0,3,6],
+            3 => [2,5,8],
+            4 => [0,4,8],
+            5 => [2,4,6],
+        ];
+
+        $data = json_decode($this->spinJson(), true);
+        $data['dt']['si']['orl'] = [0,0,0,0,0,0,0,0,0];
+        $data['dt']['si']['rl'] = [0,0,0,0,0,0,0,0,0];    
+        // $data['dt']['si']['wp'] = [0,0,0,0,0,0,0,0,0];    
+        
+        return response()->json($data);
     }
     
     public function spinJson() {
